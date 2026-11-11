@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App Icon Maker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" id="t-editor" aria-selected="true" data-p="editor"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>Editor</button>
+  <button role="tab" id="t-export" aria-selected="false" data-p="export"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Export</button>
+  <div class="sp"></div>
+  <button role="tab" id="t-settings" aria-selected="false" data-p="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</button>
+</nav>
+<div class="main">
+<div class="bar"><h1>App Icon Maker</h1><span id="crumb">Editor</span><div class="row" id="barTools" style="gap:6px;flex-wrap:nowrap;margin-left:auto"><button class="tb" id="undo" type="button" aria-label="Undo">↶</button><button class="tb" id="redo" type="button" aria-label="Redo">↷</button><button class="tb" id="showPrev" type="button">Preview</button></div></div>
+
+<section class="page" id="p-editor" role="tabpanel">
+<div class="ed" id="edroot">
+ <div class="stagecol"><div class="stk">
+  <div class="lstrip"><button class="tb" id="addBtn" type="button" aria-haspopup="true">+ Layer</button><div class="lchips" id="lchips"></div></div>
+  <div class="tools" role="toolbar" aria-label="Tools">
+   <button class="tb" data-t="transform" aria-pressed="true">Transform</button>
+   <i class="sep"></i>
+   <button class="tb" data-t="brush" aria-pressed="false">Brush</button>
+   <button class="tb" data-t="eraser" aria-pressed="false">Eraser</button>
+   <button class="tb" data-t="bucket" aria-pressed="false">Bucket</button>
+   <button class="tb" data-t="select" aria-pressed="false">Selection</button>
+   <i class="sep"></i>
+   <button class="tb" data-t="vector" aria-pressed="false">Vector</button>
+   <button class="tb" data-t="veraser" aria-pressed="false">V-Erase</button>
+   <button class="tb" data-t="text" aria-pressed="false">Text</button>
+   <i class="sep"></i>
+   <button class="tb" data-t="ruler" aria-pressed="false">Ruler</button>
+   <button class="tb" id="addShapeBtn" type="button">Shape</button>
+   <button class="tb" id="editBtn" type="button" aria-pressed="false">Properties</button>
+   <i class="sep"></i>
+  </div>
+  <div class="edwrap" id="edwrap"><span class="chk"><canvas id="rlTop" class="rlc rlt"></canvas><canvas id="rlLeft" class="rlc rll"></canvas><canvas id="ed" width="800" height="800" tabindex="0" aria-label="Icon canvas"></canvas><div class="edhint" id="edHint">Tap here or drop images<br>to add your first layer</div><div class="hud" id="hud"></div><div class="objbar" id="objBar" hidden role="toolbar" aria-label="Object actions"><button id="obDup" type="button" aria-label="Duplicate"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/></svg>Duplicate</button><button id="obCopy" type="button" aria-label="Copy"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="10" height="14" rx="2"/><path d="M5 7v12a2 2 0 002 2h8"/></svg>Copy</button><button id="obPaste" type="button" aria-label="Paste"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2M9 12h6M9 16h4"/></svg>Paste</button><button id="obDel" class="dng" type="button" aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg>Delete</button></div><button class="fitb" id="fitBtn" type="button" aria-label="Fit canvas" title="Fit canvas (default view)"></button></span><input id="fg" class="sr" type="file" accept="image/*" multiple></div>
+ </div></div>
+ <aside class="sheet" id="sheet" aria-label="Editor panel">
+  <div class="grab" id="grab" role="separator" aria-label="Drag to resize panel"></div>
+  <div class="sheethead"><div class="stabs" id="stabs" role="tablist"><button data-st="tool" aria-selected="true">Tool</button><button data-st="layers" aria-selected="false">Layers</button></div><button class="ib" id="sheetX" type="button" aria-label="Close panel">✕</button></div>
+  <div class="sbody">
+   <div class="spane hide" id="sp-tool">
+  <div id="dock">
+   <div class="dkrow" id="dkTop">
+    
+    <div class="grp"><button class="tb" id="zOut" type="button" aria-label="Zoom out">−</button><span id="zV" style="min-width:3.2em;text-align:center;font-size:.85rem">100%</span><button class="tb" id="zIn" type="button" aria-label="Zoom in">+</button><button class="tb" id="zFit" type="button">Fit</button></div>
+   </div>
+   <div class="cg hide" id="g-move">
+    <div class="seg" id="pm" style="min-width:150px"><button data-pm="view" aria-pressed="true">Pinch: View</button><button data-pm="layer" aria-pressed="false">Pinch: Layer</button></div>
+    <label class="mini">Rotate <span id="rotV">0</span>°<input id="rot" type="range" min="0" max="360" step="any" value="0"></label>
+    <label class="mini"><input type="checkbox" id="rOn" checked> Rotation</label>
+    <label class="mini"><input type="checkbox" id="rSnap"> Snap</label>
+    <span class="mini"><button class="tb" id="rMinus" type="button" aria-label="Smaller snap step">−</button><span id="rStepV">15°</span><button class="tb" id="rPlus" type="button" aria-label="Larger snap step">+</button></span>
+   </div>
+   <div class="cg hide" id="g-brush">
+    <label class="mini">Brush <select id="bType"><option value="pen">Pen</option><option value="marker">Marker</option><option value="pencil">Pencil</option><option value="airbrush">Airbrush</option><option value="highlighter">Highlighter</option><option value="calligraphy">Calligraphy</option><option value="spray">Spray</option></select></label>
+    <label class="mini">Size <span id="bSizeV">14</span><input id="bSize" type="range" min="1" max="80" value="14"></label>
+    <label class="mini">Opacity <span id="bOpV">100</span><input id="bOp" type="range" min="5" max="100" value="100"></label>
+    <label class="mini">Smooth <span id="bSmV">30</span><input id="bSm" type="range" min="0" max="90" value="30"></label>
+    <input id="bCol" type="color" value="#ffffff" aria-label="Brush color">
+   </div>
+   <div class="cg hide" id="g-eraser">
+    <label class="mini">Eraser <select id="eType"><option value="hard">Round</option><option value="soft">Fade</option></select></label>
+    <label class="mini">Size <span id="eSizeV">24</span><input id="eSize" type="range" min="1" max="120" value="24"></label>
+   </div>
+   <div class="cg hide" id="g-vector">
+    <div class="vtabs" id="vTabs" role="tablist"><button type="button" role="tab" data-vt="draw" aria-selected="true">Draw</button><button type="button" role="tab" data-vt="stroke" aria-selected="false">Stroke</button><button type="button" role="tab" data-vt="fill" aria-selected="false">Fill</button><button type="button" role="tab" data-vt="shapes" aria-selected="false">Shapes</button></div>
+    <div id="vp-draw" class="pane">
+     <div class="vrow">
+      <div class="seg" id="vModeSel"><button type="button" data-vm="add" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4 11-11 3 3L8 19z"/></svg> Pen</button><button type="button" data-vm="select" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6 2-3 6z"/></svg> Select</button></div>
+      <span class="fl"></span>
+      
+      <button class="ib" id="vMore" type="button" aria-label="More options" aria-haspopup="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+     </div>
+     <label class="mini" style="margin:4px 0">Smoothing <span id="vpSmV">35</span><input id="vpSm" type="range" min="0" max="90" value="35"></label>
+     <div class="vpad" id="vPad"><span class="xy" id="vXY">X 200 · Y 200</span><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--line)" stroke-width="3"/><circle id="vRing" cx="18" cy="18" r="15.9" fill="none" stroke="var(--acc)" stroke-width="3" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 18 18)"/></svg><span class="mid" id="vMid">Swipe to move cursor</span><div class="th" id="vTH"><span>Tap <b>Add corner</b></span><span>Hold <b>Add curve</b></span></div></div>
+     <div class="vrow">
+      <button class="ib" id="vPrev" type="button" aria-label="Previous point" disabled>‹</button><span class="vidx" id="vIdx">–/0</span><button class="ib" id="vNext" type="button" aria-label="Next point" disabled>›</button>
+      <div class="seg vpt" id="vPT"><button type="button" data-pt="corner" aria-pressed="false" disabled>Corner</button><button type="button" data-pt="smooth" aria-pressed="false" disabled>Smooth</button><button type="button" data-pt="free" aria-pressed="false" disabled>Free</button></div>
+      <button class="ib" id="vDel" type="button" aria-label="Delete point" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></button>
+     </div>
+    </div>
+    <div id="vp-stroke" class="pane hide">
+     <label class="mini">Width <span id="vWV">8</span><input id="vW" type="range" min="1" max="60" value="8"></label>
+     <label class="mini">Curve tension <span id="vSmV">50</span><input id="vSm" type="range" min="0" max="100" value="50"></label>
+     <label class="mini">Smooth line <input type="checkbox" class="sw" id="vSmoothLine" checked></label>
+     <label class="mini">Line color <input id="vStroke" type="color" value="#ffffff"></label>
+     <label class="mini">Dashed line <input type="checkbox" class="sw" id="vDashOn"></label>
+     <label class="mini">Dash <span id="vDashV">3</span><input id="vDash" type="range" min="1" max="12" value="3"></label>
+     <label class="mini">Gap <span id="vGapV">2</span><input id="vGap" type="range" min="1" max="12" value="2"></label>
+     <label class="mini">Start <select id="vArS" style="width:auto"><option value="none">None</option><option value="arrow">Arrow</option><option value="open">Open arrow</option><option value="circle">Circle</option><option value="square">Square</option><option value="diamond">Diamond</option><option value="bar">Bar</option></select></label>
+     <label class="mini">End <select id="vArE" style="width:auto"><option value="none">None</option><option value="arrow">Arrow</option><option value="open">Open arrow</option><option value="circle">Circle</option><option value="square">Square</option><option value="diamond">Diamond</option><option value="bar">Bar</option></select></label>
+     <label class="mini">Arrow size <span id="vArZV">3</span><input id="vArZ" type="range" min="1" max="10" value="3"></label>
+     <div class="seg" id="vJoin"><button type="button" data-join="round" aria-pressed="true">Round join</button><button type="button" data-join="miter" aria-pressed="false">Sharp</button><button type="button" data-join="bevel" aria-pressed="false">Bevel</button></div>
+     <label class="mini">Corner radius <span id="vRadV">20</span><input id="vRad" type="range" min="2" max="100" value="20"></label>
+     <div class="row"><button class="tb" id="vRoundSel" type="button">Round selected corner</button><button class="tb" id="vRoundAll" type="button">Round all corners</button></div>
+     <div class="seg" id="vCap"><button type="button" data-cap="round" aria-pressed="true">Round</button><button type="button" data-cap="square" aria-pressed="false">Square</button><button type="button" data-cap="butt" aria-pressed="false">Flat</button></div>
+    </div>
+    <div id="vp-fill" class="pane hide">
+     <label class="mini">Fill shape <input type="checkbox" class="sw" id="vFillOn"></label>
+     <label class="mini">Fill color <input id="vFill" type="color" value="#ff8a00"></label>
+    </div>
+    <div id="vp-shapes" class="pane hide"><div class="algrid" id="vShapes"><button class="tb" data-vs="rect" type="button">Rectangle</button><button class="tb" data-vs="rrect" type="button">Rounded</button><button class="tb" data-vs="ellipse" type="button">Circle</button><button class="tb" data-vs="triangle" type="button">Triangle</button><button class="tb" data-vs="diamond" type="button">Diamond</button><button class="tb" data-vs="hexagon" type="button">Hexagon</button><button class="tb" data-vs="star" type="button">Star</button><button class="tb" data-vs="line" type="button">Arrow line</button></div><p class="hint" style="margin:8px 0 0">Each shape is a fully editable vector path. Use Select to move points, or round its corners in Stroke.</p></div>
+    <div class="vmenu hide" id="vMenu" role="menu">
+     <label class="vmrow">Snap to points and grid <input type="checkbox" class="sw" id="vSnap" checked></label>
+     <button class="vmrow" id="vNew" type="button">New path</button>
+     <label class="vmrow">Closed path <input type="checkbox" class="sw" id="vClose"></label>
+     <button class="vmrow" id="vClr" type="button">Clear path</button>
+     <button class="vmrow" id="vFit" type="button">Fit view</button>
+    </div>
+   </div>
+   <div class="cg hide" id="g-bucket"><div class="seg" id="bkMode" style="min-width:150px"><button data-bk="fill" aria-pressed="true">Fill</button><button data-bk="erase" aria-pressed="false">Erase</button></div><label class="mini">Tolerance <span id="bkTolV">20</span><input id="bkTol" type="range" min="0" max="100" value="20"></label><input id="bkCol" type="color" value="#ffffff" aria-label="Fill color"><span class="hint" style="margin:0">Tap an area to fill or erase it.</span></div>
+   <div class="cg hide" id="g-veraser"><div class="seg" id="veMode" style="min-width:220px"><button data-ve="cut" aria-pressed="true">Intersection</button><button data-ve="line" aria-pressed="false">Whole line</button></div><label class="mini">Size <span id="veSizeV">12</span><input id="veSize" type="range" min="2" max="60" value="12"></label><span class="hint" style="margin:0">Drag across a vector line.</span></div>
+   <div class="cg hide" id="g-transform"><label class="opt"><input type="checkbox" id="mshOn"> Mesh transform</label><label class="mini">Division X <span id="mshXV">3</span><input id="mshX" type="range" min="2" max="8" value="3"></label><label class="mini">Division Y <span id="mshYV">3</span><input id="mshY" type="range" min="2" max="8" value="3"></label><button class="tb" id="mshReset" type="button">Reset mesh</button><span class="hint" style="flex-basis:100%;margin:0" id="mshHint"></span><span class="hint" style="margin:0">Drag the box to move. Corners resize, side dots stretch, the top dot rotates. Tap another layer to select it.</span></div>
+   <div class="cg hide" id="g-select"><div class="seg" id="slMode" style="min-width:170px"><button data-sl="rect" aria-pressed="true">Rectangle</button><button data-sl="lasso" aria-pressed="false">Lasso</button></div><button class="tb" id="slInv" type="button">Invert selection</button><button class="tb" id="slClr" type="button">Remove selection</button><button class="tb" id="slDel" type="button">Clear inside</button><button class="tb" id="slFill" type="button">Fill</button><input id="slCol" type="color" value="#ffffff" aria-label="Fill color"></div>
+   <div class="cg hide" id="g-ruler"><div class="seg" id="rlType" style="min-width:150px"><button data-rt="line" aria-pressed="true">Line</button><button data-rt="circle" aria-pressed="false">Circle</button></div><label class="opt"><input type="checkbox" id="rlFollow" checked> Brush follows ruler</label><button class="tb" id="rlClr" type="button">Clear ruler</button><label class="opt"><input type="checkbox" id="rlSnap" checked> Snap to grid or 15°</label><span class="hint" style="margin:0">Drag on the canvas to measure. The ruler is never exported.</span></div>
+   <div class="cg hide" id="g-text"><span class="hint" style="margin:0">Tap to add text; double-tap existing text to edit it on the canvas.</span></div>
+  </div>
+   </div>
+   <div class="spane" id="sp-edit"><div class="eph"><b>Layer properties</b><button class="ib" id="epX" type="button" aria-label="Close">✕</button></div>
+  <section class="pn hide" id="tfProps"><div class="pb flexw">
+   <select id="tfKind" style="width:auto"><option value="rect">Rectangle</option><option value="ellipse">Circle</option><option value="triangle">Triangle</option><option value="diamond">Diamond</option><option value="hexagon">Hexagon</option><option value="star">Star</option></select>
+   <label class="mini">Fill <input id="tfFill" type="color" value="#ff8a00"></label>
+   <label class="mini">Line <input id="tfStroke" type="color" value="#ffffff"></label>
+   <label class="mini">Line width <span id="tfWV">0</span><input id="tfW" type="range" min="0" max="60" value="0"></label>
+   <div id="tfRL" style="flex-basis:100%"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b style="font-size:.85rem">Corners</b><button class="tb" id="tfLink" type="button" aria-pressed="true">Linked</button></div>
+   <label class="mini" id="tfRone">Radius <span id="tfRV">18</span><input id="tfR" type="range" min="0" max="50" value="18"></label>
+   <div id="tfRfour" class="hide"><label class="mini">Top left <span id="tfR0V">18</span><input id="tfR0" type="range" min="0" max="50" value="18"></label><label class="mini">Top right <span id="tfR1V">18</span><input id="tfR1" type="range" min="0" max="50" value="18"></label><label class="mini">Bottom right <span id="tfR2V">18</span><input id="tfR2" type="range" min="0" max="50" value="18"></label><label class="mini">Bottom left <span id="tfR3V">18</span><input id="tfR3" type="range" min="0" max="50" value="18"></label></div></div>
+  </div></section>
+  <section class="pn hide" id="edText"><div class="pb flexw">
+   <textarea id="tText" rows="3" placeholder="Type text"></textarea>
+   <p class="hint" style="margin:0;flex-basis:100%">Highlight part of the text to style only that part.</p>
+   <button class="ib" data-ts="b" type="button" aria-label="Bold"><b>B</b></button><button class="ib" data-ts="i" type="button" aria-label="Italic"><i>I</i></button><button class="ib" data-ts="u" type="button" aria-label="Underline"><u>U</u></button>
+   <label class="mini">Color <input id="tCol" type="color" value="#ffffff"></label>
+   <label class="mini">Mark <input id="tBg" type="color" value="#ffff00"></label><button class="tb" id="tBgOff" type="button">No mark</button>
+   <select id="tFont" style="width:auto"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Impact">Impact</option><option value="'Courier New'">Courier New</option><option value="'Trebuchet MS'">Trebuchet</option><option value="Verdana">Verdana</option><option value="'Times New Roman'">Times</option><option value="'Comic Sans MS'">Comic Sans</option><option value="serif">Serif</option><option value="sans-serif">Sans</option><option value="monospace">Mono</option><option value="cursive">Cursive</option></select>
+   <div class="seg" id="tAl" style="min-width:200px"><button data-al="left" aria-pressed="false">Left</button><button data-al="center" aria-pressed="true">Center</button><button data-al="right" aria-pressed="false">Right</button></div>
+   <label class="mini">Outline <span id="tOwV">0</span><input id="tOw" type="range" min="0" max="12" value="0"></label><input id="tOc" type="color" value="#000000" aria-label="Outline color">
+  </div></section>
+  <section class="pn" id="props"><button class="ph" type="button" aria-expanded="true">Layer</button><div class="pb">
+   <div class="f hide"><input id="op" type="range" min="0" max="100" value="100"><span id="opV">100</span></div>
+<div class="hide"><div class="f"><input id="scale" type="range" min="10" max="300" value="100"><span id="scaleV">100</span><input id="posX" type="range" min="-50" max="50" step="any" value="0"><span id="posXV">0</span><input id="posY" type="range" min="-50" max="50" step="any" value="0"><span id="posYV">0</span></div></div>
+   <div class="f"><label>Align to canvas</label><div class="algrid" id="algrid"><button class="tb" data-a2="l" type="button">Left</button><button class="tb" data-a2="ch" type="button">Center X</button><button class="tb" data-a2="r" type="button">Right</button><button class="tb" data-a2="full" type="button">Full</button><button class="tb" data-a2="t" type="button">Top</button><button class="tb" data-a2="cv" type="button">Center Y</button><button class="tb" data-a2="b" type="button">Bottom</button><button class="tb" data-a2="fit" type="button">Fit</button></div></div>
+   <div class="f" id="rowHue"><label for="hue">Hue <span id="hueV">0</span>°</label><input id="hue" type="range" min="0" max="360" value="0"></div>
+   </div></section>
+   </div>
+   <div class="spane hide" id="sp-layers">
+  <section class="pn"><div class="pb"><div id="list"></div></div></section>
+   </div>
+   <div class="spane hide" id="sp-icon">
+  <section class="pn"><button class="ph" type="button" aria-expanded="true">Guides</button><div class="pb">
+   <div class="f"><label class="opt"><input type="checkbox" id="gShow"> Show grid</label><label class="opt"><input type="checkbox" id="gSnap"> Snap to grid</label></div>
+   <div class="f"><label for="gDiv">Grid size <span id="gDivV">8</span> × <span id="gDivW">8</span></label><input id="gDiv" type="range" min="2" max="24" value="8"></div>
+   <div class="f"><label class="opt"><input type="checkbox" id="sSafe"> Show safe edge</label><label class="opt"><input type="checkbox" id="rulerOn" checked> Show rulers and crosshair</label></div>
+   <div class="f"><label for="gOp">Guide opacity <span id="gOpV">75</span>%</label><input id="gOp" type="range" min="10" max="100" value="75"></div>
+   <div class="f"><label class="opt"><input type="checkbox" id="aMove" checked> Allow dragging and moving</label><label class="opt"><input type="checkbox" id="aScale" checked> Allow scaling and pinch</label></div>
+   <div class="f"><button class="btn alt" id="ctr" type="button">Snap layer to center</button></div>
+  </div></section>  <section class="pn"><button class="ph" type="button" aria-expanded="true">Shape</button><div class="pb">
+   <div class="shapes" id="shape">
+    <button type="button" data-s="square" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg>Square</button>
+    <button type="button" data-s="rounded" aria-pressed="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/></svg>Rounded</button>
+    <button type="button" data-s="squircle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 3C19 3 21 5 21 12s-2 9-9 9-9-2-9-9 2-9 9-9z"/></svg>Squircle</button>
+    <button type="button" data-s="circle" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Circle</button>
+    <button type="button" data-s="hexagon" aria-pressed="false"><svg viewBox="0 0 24 24"><polygon points="12,2.5 20.2,7.25 20.2,16.75 12,21.5 3.8,16.75 3.8,7.25"/></svg>Hexagon</button>
+    <button type="button" data-s="teardrop" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 3c5 0 9 4 9 9v9h-9c-5 0-9-4-9-9s4-9 9-9z" transform="rotate(180 12 12)"/></svg>Teardrop</button><button type="button" data-s="octagon" aria-pressed="false"><svg viewBox="0 0 24 24"><polygon points="8,3 16,3 21,8 21,16 16,21 8,21 3,16 3,8"/></svg>Octagon</button><button type="button" data-s="diamond" aria-pressed="false"><svg viewBox="0 0 24 24"><polygon points="12,2.5 21.5,12 12,21.5 2.5,12"/></svg>Diamond</button><button type="button" data-s="star" aria-pressed="false"><svg viewBox="0 0 24 24"><polygon points="12,2.5 14.8,9 21.5,9.5 16.3,13.8 18,20.5 12,16.8 6,20.5 7.7,13.8 2.5,9.5 9.2,9"/></svg>Star</button>
+   </div>
+   <div class="f" style="margin-top:10px"><label for="mRad">Corner roundness <span id="mRadV">22</span>%</label><input id="mRad" type="range" min="0" max="50" value="22"></div>
+  </div></section>  <section class="pn"><button class="ph" type="button" aria-expanded="true">Background</button><div class="pb">
+   <div class="seg" id="bgMode"><button data-m="color" aria-pressed="true">Color</button><button data-m="image" aria-pressed="false">Image</button><button data-m="dots" aria-pressed="false">Dots</button><button data-m="none" aria-pressed="false">None</button></div>
+   <div id="bgColorBox" class="row f"><input id="bgColor" type="color" value="#1f6feb" aria-label="Background color"><input id="bgHex" type="text" value="#1f6feb" style="width:110px" aria-label="Hex color"></div>
+   <div id="bgDotBox" class="f hide"><div class="row"><label class="mini">Dot color <input id="bgDotC" type="color" value="#ffffff"></label></div><label class="mini">Dot size <input id="bgDotS" type="range" min="10" max="90" value="45"></label><label class="mini">Dots across <input id="bgDotN" type="range" min="4" max="40" value="14"></label></div>
+   <div id="bgImgBox" class="f hide"><label class="drop" id="bgDrop" for="bgImg"><img id="bgThumb" class="hide" alt="Background image"><span id="bgHint">Tap or drop an image</span></label><input id="bgImg" class="sr" type="file" accept="image/*"></div>
+  </div></section>
+   </div>
+  </div>
+ </aside>
+ <button class="tb" id="sheetOpen" type="button" hidden>Show panel</button>
+</div>
+</section>
+
+<div id="epBack" hidden></div>
+<div class="opdlg" id="opDlg" hidden role="dialog" aria-label="Layer opacity"><div class="eph"><b id="opName">Layer</b><button class="ib" id="opX" type="button" aria-label="Close">✕</button></div><label class="mini">Opacity <span id="opDV">100</span>%<input id="opD" type="range" min="0" max="100" value="100"></label></div>
+<div id="toast" hidden role="status"></div>
+<div class="pop hide" id="addMenu" role="menu"><button data-add="draw" role="menuitem">Transparent layer<small>Blank layer on top, for drawing</small></button><button data-add="image" role="menuitem">Image<small>Choose one or more pictures</small></button><button data-add="shape" role="menuitem">Shape<small>Rectangle, circle, star and more</small></button><button data-add="vec" role="menuitem">Vector drawing<small>Points you can edit</small></button><button data-add="text" role="menuitem">Text</button></div>
+<div class="ov hide" id="ov" role="dialog" aria-modal="true" aria-label="Preview"><div class="ovbox">
+ <div class="row" style="justify-content:space-between;margin-bottom:12px"><h2 style="margin:0">Preview</h2><button class="btn alt" id="closePrev" type="button">Close</button></div>
+ <div class="stage">
+  <figure class="big"><span class="chk"><canvas id="pv1" width="192" height="192"></canvas></span><figcaption>ic_launcher</figcaption></figure>
+  <figure class="small"><span class="chk"><canvas id="pv2" width="192" height="192"></canvas></span><figcaption>round</figcaption></figure>
+  <figure class="small"><span class="chk"><canvas id="pv3" width="192" height="192"></canvas></span><figcaption>adaptive</figcaption></figure>
+ </div>
+</div></div>
+
+<section class="page" id="p-export" role="tabpanel" hidden>
+ <div class="card">
+  <h2>Export Android icons</h2>
+  <p class="hint" style="margin:0 0 10px">Choose what to include. The launcher icon is always exported.</p>
+  <label class="opt"><input type="checkbox" id="oRound" checked> Round icon</label>
+  <label class="opt"><input type="checkbox" id="oAdapt" checked> Adaptive icon (foreground, background, XML)</label>
+  <label class="opt"><input type="checkbox" id="oStore" checked> Play Store icon (512 px)</label>
+  <div class="row" style="margin-top:16px"><button class="btn" id="exportBtn" type="button">Export</button></div>
+  <div class="msg" id="msg" role="status">Add a layer in the Editor first.</div>
+  <div id="tree" class="hide"></div><button id="zip" class="hide" disabled></button><button id="folder" class="hide" disabled></button>
+ </div>
+ <div class="ov hide" id="exDlg" role="dialog" aria-modal="true" aria-label="Save export"><div class="ovbox" style="max-width:420px">
+  <h2>Save export</h2>
+  <div class="f"><label for="exName">File name</label><input id="exName" type="text" value="android-icons" autocomplete="off"></div>
+  <div class="f"><label for="exExt">Extension</label><input id="exExt" type="text" value="zip" autocomplete="off"></div>
+  <p class="hint">Everything is compressed into one zip archive, whatever extension you choose.</p>
+  <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn alt" id="exCancel" type="button">Cancel</button><button class="btn" id="exGo" type="button">Export</button></div>
+ </div></div>
+</section>
+
+<section class="page" id="p-settings" role="tabpanel" hidden>
+ <div class="card"><h2>Appearance</h2><div class="f"><label for="theme">Mode</label><select id="theme"><option value="auto">Auto (follow device)</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div>
+ <div class="card"><h2>Export</h2>
+  <div class="f"><label for="path">Folder path inside the zip</label><input id="path" type="text" value="app/src/main/res"></div>
+    <p class="hint">Sets the folder structure inside the exported zip.</p></div>
+ <div class="card foot"><h2>Follow me</h2><a href="https://facebook.com/neilobiasca" target="_blank" rel="noopener noreferrer">Neil Justin Obiasca</a></div>
+</section>
+</div>
+</div>
+
+<script src="script.js" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>
+
